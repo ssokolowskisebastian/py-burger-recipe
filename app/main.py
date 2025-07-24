@@ -9,6 +9,7 @@ class Validator(ABC):
         return getattr(obj, self.protected_name)
 
     def __set__(self, instance, value: int) -> None:
+        self.validate(value)
         setattr(instance, self.protected_name, value)
 
     @abstractmethod
@@ -29,7 +30,7 @@ class Number(Validator):
                              f"{self.min_value} and greater than {self.max_value}.")
 
 class OneOf(Validator):
-    def __init__(self, options: list) -> None:
+    def __init__(self, options: tuple) -> None:
         self.options = options
 
     def validate(self, value: str) -> None:
@@ -43,7 +44,7 @@ class BurgerRecipe:
     cutlets = Number(1, 3)
     tomatoes = Number(0, 3)
     eggs = Number(0, 2)
-    sauce = OneOf(["ketchup", "mayo", "burger"])
+    sauce = OneOf(("ketchup", "mayo", "burger"))
 
     def __init__(self, buns: int, cheese: int,
                  tomatoes: int, cutlets: int,
